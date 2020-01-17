@@ -64,6 +64,10 @@ class SitePermissionMiddleware(MiddlewareMixin):
     access.
     """
     def process_view(self, request, view_func, view_args, view_kwargs):
+        assert settings.USE_SITE_PERMISSION, (
+            "SitePermissionMiddleware mustn't be installed when "
+            "USE_SITE_PERMISSION set to False."
+        )
         has_site_permission = False
         if request.user.is_superuser:
             has_site_permission = True

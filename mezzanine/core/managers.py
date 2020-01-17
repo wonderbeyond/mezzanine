@@ -364,28 +364,31 @@ class SearchableManager(Manager):
         return sorted(all_results, key=lambda r: r.result_count, reverse=True)
 
 
-class CurrentSiteManager(DjangoCSM):
-    """
-    Extends Django's site manager to first look up site by ID stored in
-    the request, the session, then domain for the current request
-    (accessible via threadlocals in ``mezzanine.core.request``), the
-    environment variable ``MEZZANINE_SITE_ID`` (which can be used by
-    management commands with the ``--site`` arg, finally falling back
-    to ``settings.SITE_ID`` if none of those match a site.
-    """
+if settings.USE_SITE_PERMISSION:
+    class CurrentSiteManager(DjangoCSM):
+        """
+        Extends Django's site manager to first look up site by ID stored in
+        the request, the session, then domain for the current request
+        (accessible via threadlocals in ``mezzanine.core.request``), the
+        environment variable ``MEZZANINE_SITE_ID`` (which can be used by
+        management commands with the ``--site`` arg, finally falling back
+        to ``settings.SITE_ID`` if none of those match a site.
+        """
 
-    use_in_migrations = False
+        use_in_migrations = False
 
-    def __init__(self, field_name=None, *args, **kwargs):
-        super(DjangoCSM, self).__init__(*args, **kwargs)
-        self.__field_name = field_name
-        self.__is_validated = False
+        def __init__(self, field_name=None, *args, **kwargs):
+            super(DjangoCSM, self).__init__(*args, **kwargs)
+            self.__field_name = field_name
+            self.__is_validated = False
 
-    def get_queryset(self):
-        if not self.__is_validated:
-            self._get_field_name()
-        lookup = {self.__field_name + "__id__exact": current_site_id()}
-        return super(DjangoCSM, self).get_queryset().filter(**lookup)
+        def get_queryset(self):
+            if not self.__is_validated:
+                self._get_field_name()
+            lookup = {self.__field_name + "__id__exact": current_site_id()}
+            return super(DjangoCSM, self).get_queryset().filter(**lookup)
+else:
+    CurrentSiteManager = DjangoCSM
 
 
 class DisplayableManager(CurrentSiteManager, PublishedManager,

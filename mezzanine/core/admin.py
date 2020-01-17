@@ -383,7 +383,9 @@ class SitePermissionUserAdminForm(UserAdmin.form):
 
     def clean_email(form):
         email = form.cleaned_data.get("email")
-        if User.objects.exclude(id=form.instance.id).filter(email=email).exists():
+        if User.objects.exclude(id=form.instance.id).filter(
+            email=email
+        ).exists():
             raise ValidationError(_("This email is already registered"))
         return email
 
@@ -410,7 +412,7 @@ class SitePermissionUserAdmin(UserAdmin):
 
 
 # only register if User hasn't been overridden
-if User == AuthUser:
+if settings.USE_SITE_PERMISSION and User == AuthUser:
     if User in admin.site._registry:
         admin.site.unregister(User)
     admin.site.register(User, SitePermissionUserAdmin)
