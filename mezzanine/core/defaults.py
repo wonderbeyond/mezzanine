@@ -562,3 +562,10 @@ register_setting(
     editable=False,
     default="",
 )
+
+register_setting(
+    name="USE_SITE_PERMISSION",
+    description=_("Whether using the site permission feature."),
+    editable=False,
+    default=True,
+)
