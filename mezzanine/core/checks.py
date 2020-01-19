@@ -158,7 +158,8 @@ def _build_suggested_template_config(settings):
 @register()
 def check_sites_middleware(app_configs, **kwargs):
 
-    if not middlewares_or_subclasses_installed([SITE_PERMISSION_MIDDLEWARE]):
+    if settings.USE_SITE_PERMISSION and \
+            not middlewares_or_subclasses_installed([SITE_PERMISSION_MIDDLEWARE]):
         return [Warning(SITE_PERMISSION_MIDDLEWARE +
                         " missing from settings.MIDDLEWARE - per site"
                         " permissions not applied",
