@@ -23,6 +23,10 @@ class PageManager(DisplayableManager):
         ``PageMiddleware``.
         """
         published = super(PageManager, self).published(for_user=for_user)
+
+        if settings.USE_STRICT_PUBLIC:
+            return published.exclude(login_required=True)
+
         unauthenticated = for_user and not is_authenticated(for_user)
         if (unauthenticated and not include_login_required and
                 not settings.PAGES_PUBLISHED_INCLUDE_LOGIN_REQUIRED):

@@ -571,3 +571,13 @@ register_setting(
     editable=False,
     default=True,
 )
+
+register_setting(
+    name="USE_STRICT_PUBLIC",
+    description=_(
+        "If ``True``, PublishedManager will always return published items "
+        "regardless of who the requesting user is."
+    ),
+    editable=False,
+    default=False,
+)

@@ -62,8 +62,9 @@ class PublishedManager(Manager):
         current date when specified.
         """
         from mezzanine.core.models import CONTENT_STATUS_PUBLISHED
-        if for_user is not None and for_user.is_staff:
-            return self.all()
+        if not settings.USE_STRICT_PUBLIC:
+            if for_user is not None and for_user.is_staff:
+                return self.all()
         return self.filter(
             Q(publish_date__lte=now()) | Q(publish_date__isnull=True),
             Q(expiry_date__gte=now()) | Q(expiry_date__isnull=True),
