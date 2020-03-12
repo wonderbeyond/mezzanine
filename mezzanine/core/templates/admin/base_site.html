@@ -33,6 +33,18 @@ jQuery(function($) {
     // This line can be removed after a decent amount of time has passed since
     // https://github.com/stephenmcd/grappelli-safe/pull/56/files occurring.
     $("#id_sitepermissions-__prefix__-sites").parent().parent().parent().remove();
+
+    if ($('#id_gen_description').is(':checked')) {
+        $('#id_description').attr('readonly', 'readonly');
+    }
+
+     $('#id_gen_description').change(function () {
+        if ($('#id_description').attr('readonly') == "readonly") {
+            $('#id_description').removeAttr('readonly');
+        } else {
+            $('#id_description').attr('readonly', 'readonly');
+        }
+    });
 });
 </script>
 {% endblock %}
