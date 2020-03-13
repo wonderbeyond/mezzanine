@@ -2,6 +2,7 @@ from json import loads
 from urllib.request import urlopen
 from urllib.parse import urlencode
 
+import django
 from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
@@ -26,7 +27,7 @@ user_model_name = get_user_model_name()
 
 
 def wrapped_manager(klass):
-    if settings.USE_MODELTRANSLATION:
+    if settings.USE_MODELTRANSLATION and django.VERSION < (2, 0):
         from modeltranslation.manager import MultilingualManager
 
         class Mgr(MultilingualManager, klass):

@@ -169,11 +169,11 @@ class SearchableQuerySet(QuerySet):
             queryset = queryset.filter(reduce(ior, optional))
         return queryset.distinct()
 
-    def _clone(self):
+    def _clone(self, *args, **kwargs):
         """
         Ensure attributes are copied to subsequent queries.
         """
-        clone = super(SearchableQuerySet, self)._clone()
+        clone = super(SearchableQuerySet, self)._clone(*args, **kwargs)
         clone._search_terms = self._search_terms
         clone._search_fields = self._search_fields
         clone._search_ordered = self._search_ordered
@@ -386,7 +386,8 @@ if settings.USE_SITE_PERMISSION:
             lookup = {self.__field_name + "__id__exact": current_site_id()}
             return super(DjangoCSM, self).get_queryset().filter(**lookup)
 else:
-    CurrentSiteManager = DjangoCSM
+    class CurrentSiteManager(DjangoCSM):
+        use_in_migrations = False
 
 
 class DisplayableManager(CurrentSiteManager, PublishedManager,
