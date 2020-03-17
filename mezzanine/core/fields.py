@@ -4,6 +4,7 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.forms import MultipleChoiceField
 from django.utils.text import capfirst
+from django.utils.html import strip_tags
 from django.utils.translation import ugettext_lazy as _
 
 from mezzanine.core.forms import OrderWidget
@@ -47,7 +48,15 @@ class RichTextField(models.TextField):
         """
         Remove potentially dangerous HTML tags and attributes.
         """
-        return escape(value)
+        clean_value = escape(value)
+
+        # Let "blank" content be real blank string, keep the un-touched state,
+        # Because TinyMCE may auto fill an empty html backbone, which
+        # will be "escaped" into a string with only empty lines.
+        if not strip_tags(clean_value).strip():
+            return ""
+
+        return clean_value
 
 
 class MultiChoiceField(models.CharField):
