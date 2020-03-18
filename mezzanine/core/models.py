@@ -204,7 +204,7 @@ class TimeStamped(models.Model):
     def save(self, *args, **kwargs):
         _now = now()
         self.updated = _now
-        if not self.id:
+        if not self.pk:
             self.created = _now
         super(TimeStamped, self).save(*args, **kwargs)
 
